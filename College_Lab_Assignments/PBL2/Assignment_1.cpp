@@ -33,7 +33,7 @@
   {
   if (s[i].username==key)
 {
-cout << "Key found" << endl;
+cout << "\nKey found" << endl;
 s[i].display();
 found++;
 break;
@@ -41,7 +41,7 @@ break;
   }
   
   if (!found)
-  cout<<"key not found";
+  cout<<"\nKey not found";
   
 }
   int  main ()
@@ -64,7 +64,7 @@ break;
   cout << "\nEnter details for user " << (i + 1) << ":" << endl;
   s1[i].accept();
   }
-  cout<<"---------Entered Data------------";
+  cout<<"\n---------Entered Data------------";
   for (i=0; i<n; i++)
   s1[i].display();
   cout<<"\nEnter name to search: ";
