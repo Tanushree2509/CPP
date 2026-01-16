@@ -38,9 +38,7 @@ int main()
     while (ch == 'y' || ch == 'Y')
     {
         cout << "\n----Area Calculation----";
-        cout << "\n1. Area of Rectangle";
-        cout << "\n2. Area of Square";
-        cout << "\n3. Area of Triangle";
+        cout << "\n1. Area of Rectangle \n2. Area of Square \n3. Area of Triangle";
         cout << "\nEnter your choice: ";
         cin >> choice;
 
