@@ -3,21 +3,29 @@ using namespace std;
 class mobileuser
 {
     string username;
-    int number;
+    string mobileno;
     string address;
+    int comparisons;   // To track comparisons
+    int passes; // To track passes (partition calls)
     public:
     void accept();
     void display();
-    void seqsearch(mobileuser arr[], int num, string key);
-    void binarysearch(mobileuser arr[], int num, string key);
+    void merge(mobileuser s[], int low, int mid, int high);
+    void mergesort(mobileuser arr[], int low, int high);
+    int partition(mobileuser arr[], int low, int high); 
+    void quicksort(mobileuser arr[], int low, int high);
+    void resetCounters() { comparisons = 0; passes = 0; }  //  Reset counters
+    int getComparisons() const { return comparisons; }    //  Get comparisons
+    int getPasses() const { return passes; }             // Get passes
+
 };
 
 void mobileuser::accept()
 {
     cout << "Enter username: ";
     cin >> username;
-    cout << "Enter number: ";
-    cin >> number;
+    cout << "Enter mobile number: ";
+    cin >> mobileno;
     cout << "Enter address: ";
     cin >> address;
 }
@@ -25,103 +33,130 @@ void mobileuser::accept()
 void mobileuser::display()
 {
     cout << "Username: " << username << endl;
-    cout << "Number: " << number << endl;
+    cout << "Number: " << mobileno << endl;
     cout << "Address: " << address << endl;
 }
-
-void mobileuser::seqsearch(mobileuser arr[], int num, string key)
+//partition
+int mobileuser::partition(mobileuser arr[], int low, int high)
 {
-    int found = 0;
-    for (int i = 0; i < num; i++)
+    string pivot = arr[high].mobileno;  // Compare by mobile number 
+    int i = low - 1;
+    passes++;  // Increment passes counter
+    
+    for(int j = low; j < high; j++)
     {
-        if (arr[i].username == key)
+        comparisons++;  //  Track comparisons
+        if(arr[j].mobileno <= pivot)  // Compare mobile numbers for descending order
         {
-            cout << "Record found:" << endl;
-            arr[i].display();
-            found++;
+            i++;
+            swap(arr[i], arr[j]);
         }
     }
-    if (found == 0)
+    swap(arr[i+1], arr[high]);
+    return i + 1;
+}
+  
+//merge sort
+void mobileuser::mergesort(mobileuser arr[], int low, int high)
+{
+    if(low >= high) return;
+        
+    int mid = low + (high - low) / 2;
+    passes++;  // Count each divide as a pass
+        
+    mergesort(arr, low, mid);
+    mergesort(arr, mid + 1, high);
+    merge(arr, low, mid, high);
+}
+  
+void mobileuser::merge(mobileuser arr[], int low, int mid, int high)
+{
+    mobileuser temp[20];
+    int i = low, j = mid+1, k = low;
+      
+    // Merge two sorted halves (descending order)
+    while(i <= mid && j <= high) 
     {
-        cout << "Record not found." << endl;
+        comparisons++;
+        if(arr[i].mobileno >= arr[j].mobileno) 
+        {  // Descending: larger first
+            temp[k++] = arr[i++];
+        } else {
+            temp[k++] = arr[j++];
+        }
+    }
+      
+    // Copy remaining elements
+    while(i <= mid) temp[k++] = arr[i++];
+    while(j <= high) temp[k++] = arr[j++];
+      
+    // Copy back to original array
+    for(int idx = low; idx <= high; idx++) {
+        arr[idx] = temp[idx];
     }
 }
 
-void mobileuser::binarysearch(mobileuser arr[], int num, string key)
+void mobileuser::quicksort(mobileuser arr[], int low, int high)
 {
-  int low=0;
-  int high=num-1;
-  while(low<=high)
-  {
-    int mid = (low + high)/2;
-    if(key==arr[mid].username)
+    if(low >= high)
     {
-       cout<<"Record found!\n";
-       arr[mid].display();
-       return;
+        return;
     }
-    else if(key <arr[mid].username)
-    {
-        high=mid-1;
-    }
-    else
-    {
-        low=mid+1;
-    }
-  }
-  cout<<"Record not found!\n";
-}
+    int j = partition(arr, low, high); 
+    quicksort(arr, low, j-1);
+    quicksort(arr, j+1, high);
+}  
 
-int main()
-{
-    int num;
-    string searchKey;
+int main ()
+{ 
     mobileuser s1[20], s2;
-    cout << "Enter number of mobile users: ";
-    cin >> num;
-    for (int i = 0; i < num; i++)
+    int n, choice;
+    string key;
+    cout << "Enter no. of users: ";
+    cin >> n;
+    for (int i = 0; i < n; i++)
     {
-        cout << "Enter details for user " << (i + 1) << ":" << endl;
+        cout << "\nEnter details for user " << (i + 1) << ":" << endl;
         s1[i].accept();
     }
-    int choice;
-    do
+    while (choice!= 4)
     {
-    
-    cout<<"1) Display all users\n2) Linear search\n3) Binary search\n4) Exit";
-    cout<<"Enter your choice : ";
-    cin>>choice;
-    switch (choice)
-    {
+      cout << "\n1) Display all users \n2) Quick sort (descending mobile no.) \n3) Merge sort (descending mobile no.) \n4)Exit\n";
+      cout << "Enter your choice: ";
+      cin >> choice;
+      switch (choice)
+      {
         case 1: 
-        for (int i = 0; i < num; i++)
-        {
-        cout<<"Registered user " << (i+1)<< ":" << endl;
-        s1[i].display();
-        }
-        break;
-
+            cout << "\n--- All Users ---\n";
+            for (int i = 0; i < n; i++)
+            {
+                cout << "User " << (i+1) << ":" << endl;
+                s1[i].display();
+                cout << endl;
+            }
+            break;
         case 2:
-            cout << "Enter username to search: ";
-            cin >> searchKey;
-            s2.seqsearch(s1, num, searchKey);
+            s2.resetCounters();  
+            s2.quicksort(s1, 0, n-1);
+            cout << "Users sorted in descending order of mobile number!\n";
+            cout << "Passes: " << s2.getPasses() << ", Comparisons: " << s2.getComparisons() << endl;
             break;
-        
-        case 3:
-            cout << "Enter username to search: ";
-            cin >> searchKey;
-            s2.binarysearch(s1, num, searchKey);
+         case 3:  
+            s2.resetCounters();
+            s2.mergesort(s1, 0, n-1);
+            cout << "Merge Sort - Users sorted in descending order!\n";
+            cout << "Passes: " << s2.getPasses() << ", Comparisons: " << s2.getComparisons() << endl;
             break;
-
         case 4:
-        cout<<"Thank you!\n";
-        break;
+            cout << "Thank you!\n";
+            break;
 
         default:
-        cout<<"Invalid choice\n";
+            cout << "Invalid choice\n";
+        
 
-    } 
-    }while(choice != 4);
-
+      }
+    }
+    
     return 0;
 }
