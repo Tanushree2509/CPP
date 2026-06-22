@@ -2,9 +2,9 @@
 using namespace std;
 
 // Function to calculate factorial
-int factorial(int n)
+long long factorial(int n)
 {
-    int fact = 1;
+    long long fact = 1;
     for(int i = 1; i <= n; i++)
     {
         fact = fact * i;
