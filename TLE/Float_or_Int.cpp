@@ -12,7 +12,7 @@ int main()
 
     if (fracPart == 0)
     {
-        cout << "int " << (long long)intPart;
+        cout << "int " << (long long)intPart;   
     }
     else
     {
