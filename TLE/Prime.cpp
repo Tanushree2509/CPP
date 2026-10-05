@@ -1,0 +1,26 @@
+#include<iostream>
+#include<vector>
+using namespace std;
+
+vector<int> factor(int n)
+{
+   vector<int> facts;
+   for (long long d = 2; d * d <= n; d++)
+   {
+      while (n % d == 0)
+      {
+         facts.push_back(d);
+         n/=d;
+      }
+   }
+   if (n > 1)
+   {
+      facts.push_back(n);
+   }
+   return facts; 
+}
+
+int main ()
+{
+   return 0;
+}
